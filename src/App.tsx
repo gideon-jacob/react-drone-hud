@@ -75,7 +75,7 @@ export default function App() {
 
         <div className="flex items-center gap-2 sm:gap-4">
           <code className="hidden md:inline-block px-2.5 py-1 rounded bg-slate-800/80 border border-slate-700/80 text-xs font-mono text-slate-300">
-            npm i react-drone-hud
+            npm i @gideonjacob/react-drone-hud
           </code>
           <a
             href="https://github.com/gideon-jacob/react-drone-hud"
