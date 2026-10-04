@@ -1,0 +1,95 @@
+{
+  "name": "@gideonjacob/react-drone-hud",
+  "version": "1.0.0",
+  "description": "Modern, responsive ArduPilot & Mission Planner style Primary Flight Display (PFD) HUD for drones and UAVs built with React & Tailwind CSS",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react",
+    "drone",
+    "hud",
+    "uav",
+    "ardupilot",
+    "mission-planner",
+    "avionics",
+    "artificial-horizon",
+    "pfd",
+    "flight-display",
+    "telemetry",
+    "nidar"
+  ],
+  "author": "Gideon Jacob (https://github.com/gideon-jacob)",
+  "contributors": [
+    "Manju",
+    "Pawan Sai",
+    "Kiruthika",
+    "Gideon Jacob"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gideon-jacob/react-drone-hud.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gideon-jacob/react-drone-hud/issues"
+  },
+  "homepage": "https://github.com/gideon-jacob/react-drone-hud#readme",
+  "scripts": {
+    "dev": "vite",
+    "build:lib": "vite build --config vite.config.lib.ts",
+    "build:demo": "tsc -b && vite build",
+    "build": "npm run build:lib",
+    "build:all": "npm run build:lib && npm run build:demo",
+    "lint": "oxlint",
+    "preview": "vite preview --outDir dist-demo",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "oxlint": "^1.81.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vite-plugin-dts": "^5.1.2"
+  }
+}
