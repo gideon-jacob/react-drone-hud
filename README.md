@@ -1,6 +1,6 @@
 # react-drone-hud
 
-[![npm version](https://img.shields.io/npm/v/@gideonjacob/react-drone-hud.svg?style=flat-square&color=emerald)](https://www.npmjs.com/package/@gideonjacob/react-drone-hud)
+[![npm version](https://img.shields.io/npm/v/@gideon-jacob/react-drone-hud.svg?style=flat-square&color=emerald)](https://www.npmjs.com/package/@gideon-jacob/react-drone-hud)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![React 18 & 19](https://img.shields.io/badge/React-18%20%7C%2019-61dafb.svg?style=flat-square)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178c6.svg?style=flat-square)](https://www.typescriptlang.org/)
@@ -30,15 +30,15 @@ Built with pure SVG, CSS Container Queries, and modern React—offering zero hea
 ## Installation
 
 ```bash
-npm install @gideonjacob/react-drone-hud
+npm install @gideon-jacob/react-drone-hud
 ```
 or with yarn / pnpm / bun:
 ```bash
-yarn add @gideonjacob/react-drone-hud
+yarn add @gideon-jacob/react-drone-hud
 # or
-pnpm add @gideonjacob/react-drone-hud
+pnpm add @gideon-jacob/react-drone-hud
 # or
-bun add @gideonjacob/react-drone-hud
+bun add @gideon-jacob/react-drone-hud
 ```
 
 ---
@@ -48,8 +48,8 @@ bun add @gideonjacob/react-drone-hud
 Import the component and its stylesheet in your React project:
 
 ```tsx
-import { DroneHud } from "@gideonjacob/react-drone-hud";
-import "@gideonjacob/react-drone-hud/style.css";
+import { DroneHud } from "@gideon-jacob/react-drone-hud";
+import "@gideon-jacob/react-drone-hud/style.css";
 
 export function GroundStation() {
   return (

@@ -33,14 +33,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          NPM_PKG="@gideonjacob/react-drone-hud"
-          GHP_PKG="@gideon-jacob/react-drone-hud"
+          PKG_NAME=$(node -p "require('./package.json').name")
 
           echo "Local Version: $VERSION"
+          echo "Package: $PKG_NAME"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
           # 1. Check npmjs.com
-          NPM_REG_VER=$(npm view "$NPM_PKG" version 2>/dev/null || echo "none")
+          NPM_REG_VER=$(npm view "$PKG_NAME" version 2>/dev/null || echo "none")
           echo "npm registry version: $NPM_REG_VER"
           if [ "$VERSION" != "$NPM_REG_VER" ]; then
             echo "publish_npm=true" >> "$GITHUB_OUTPUT"
@@ -52,7 +52,7 @@ jobs:
           npm config set @gideon-jacob:registry https://npm.pkg.github.com
           npm config set //npm.pkg.github.com/:_authToken "${GITHUB_TOKEN}"
 
-          GHP_REG_VER=$(npm view "$GHP_PKG" version 2>/dev/null || echo "none")
+          GHP_REG_VER=$(npm view "$PKG_NAME" version 2>/dev/null || echo "none")
           echo "GitHub Packages version: $GHP_REG_VER"
           if [ "$VERSION" != "$GHP_REG_VER" ]; then
             echo "publish_ghp=true" >> "$GITHUB_OUTPUT"
@@ -76,13 +76,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          node -e '
-            const fs = require("fs");
-            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            pkg.name = "@gideon-jacob/react-drone-hud";
-            pkg.publishConfig = { registry: "https://npm.pkg.github.com" };
-            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
-          '
           npm config set @gideon-jacob:registry https://npm.pkg.github.com
           npm config set //npm.pkg.github.com/:_authToken "${NODE_AUTH_TOKEN}"
           npm publish

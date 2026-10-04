@@ -1,5 +1,5 @@
 {
-  "name": "@gideonjacob/react-drone-hud",
+  "name": "@gideon-jacob/react-drone-hud",
   "version": "1.0.0",
   "description": "Modern, responsive ArduPilot & Mission Planner style Primary Flight Display (PFD) HUD for drones and UAVs built with React & Tailwind CSS",
   "type": "module",
