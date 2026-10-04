@@ -1,15 +1,18 @@
-name: Publish to npm
+name: Publish Package
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build-and-publish:
+  publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout code
@@ -19,33 +22,62 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Check version against npm registry
+      - name: Check version status
         id: check_version
         run: |
-          LOCAL_VERSION=$(node -p "require('./package.json').version")
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          echo "Package: $PACKAGE_NAME"
-          echo "Local version: $LOCAL_VERSION"
+          VERSION=$(node -p "require('./package.json').version")
+          NPM_PKG="@gideonjacob/react-drone-hud"
+          GHP_PKG="@gideon-jacob/react-drone-hud"
 
-          REGISTRY_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "none")
-          echo "Registry version: $REGISTRY_VERSION"
+          echo "Local Version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-          if [ "$LOCAL_VERSION" = "$REGISTRY_VERSION" ]; then
-            echo "Version $LOCAL_VERSION is already published on npm. Skipping publish."
-            echo "publish=false" >> "$GITHUB_OUTPUT"
+          # 1. Check npmjs.com
+          NPM_REG_VER=$(npm view "$NPM_PKG" version 2>/dev/null || echo "none")
+          echo "npm registry version: $NPM_REG_VER"
+          if [ "$VERSION" != "$NPM_REG_VER" ]; then
+            echo "publish_npm=true" >> "$GITHUB_OUTPUT"
           else
-            echo "New version detected ($LOCAL_VERSION != $REGISTRY_VERSION). Ready to publish."
-            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "publish_npm=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish to npm
-        if: steps.check_version.outputs.publish == 'true'
+          # 2. Check GitHub Packages
+          GHP_REG_VER=$(npm view "$GHP_PKG" version --registry=https://npm.pkg.github.com 2>/dev/null || echo "none")
+          echo "GitHub Packages version: $GHP_REG_VER"
+          if [ "$VERSION" != "$GHP_REG_VER" ]; then
+            echo "publish_ghp=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish_ghp=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 1. Publish to public npm (npmjs.com) if NPM_TOKEN is provided
+      - name: Publish to npmjs.com
+        if: steps.check_version.outputs.publish_npm == 'true' && env.HAS_NPM_TOKEN != ''
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+          HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}"
+          npm publish --access public
+
+      # 2. Publish to GitHub Packages (npm.pkg.github.com) -> Shows in GitHub "Packages"
+      - name: Publish to GitHub Packages
+        if: steps.check_version.outputs.publish_ghp == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            pkg.name = "@gideon-jacob/react-drone-hud";
+            pkg.publishConfig = { registry: "https://npm.pkg.github.com" };
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
+          '
+          npm config set @gideon-jacob:registry https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken "${NODE_AUTH_TOKEN}"
+          npm publish
