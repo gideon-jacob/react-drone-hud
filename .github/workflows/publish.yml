@@ -29,6 +29,8 @@ jobs:
 
       - name: Check version status
         id: check_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           NPM_PKG="@gideonjacob/react-drone-hud"
@@ -46,8 +48,11 @@ jobs:
             echo "publish_npm=false" >> "$GITHUB_OUTPUT"
           fi
 
-          # 2. Check GitHub Packages
-          GHP_REG_VER=$(npm view "$GHP_PKG" version --registry=https://npm.pkg.github.com 2>/dev/null || echo "none")
+          # 2. Check GitHub Packages (requires authentication to query)
+          npm config set @gideon-jacob:registry https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken "${GITHUB_TOKEN}"
+
+          GHP_REG_VER=$(npm view "$GHP_PKG" version 2>/dev/null || echo "none")
           echo "GitHub Packages version: $GHP_REG_VER"
           if [ "$VERSION" != "$GHP_REG_VER" ]; then
             echo "publish_ghp=true" >> "$GITHUB_OUTPUT"
